@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
 }
 
 class _HomeView extends StatelessWidget {
-  const _HomeView({super.key});
+  const _HomeView();
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +45,9 @@ class _CustomListTile extends StatelessWidget {
       subtitle: Text(menuItem.subtitle),
       leading: Icon(menuItem.icon, color: colors.primary),
       trailing: Icon(Icons.arrow_forward_ios_rounded, color: colors.primary),
+      onTap: () {
+        Navigator.pushNamed(context, menuItem.link);
+      },
     );
   }
 }
