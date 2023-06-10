@@ -1,33 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:widgets_app/config/menu/menu_items.dart';
 
 class SideMenu extends StatefulWidget {
-  const SideMenu({super.key});
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
+  const SideMenu({super.key, required this.scaffoldKey});
 
   @override
   State<SideMenu> createState() => _SideMenuState();
 }
 
 class _SideMenuState extends State<SideMenu> {
-  int navDrawerIndex = 1;
+  int navDrawerIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    final hasNotch = MediaQuery.of(context).viewPadding.top > 35;
+
     return NavigationDrawer(
       selectedIndex: navDrawerIndex,
       onDestinationSelected: (index) {
         setState(() {
           navDrawerIndex = index;
         });
+
+        final menuItem = appMenuItems[index];
+        context.push(menuItem.link);
+        widget.scaffoldKey.currentState!.closeDrawer();
       },
-      children: const [
-        NavigationDrawerDestination(
-          icon: Icon(Icons.add),
-          label: Text("HomeScreen"),
+      children: [
+        Padding(
+          padding: EdgeInsets.fromLTRB(28, hasNotch ? 10 : 20, 16, 10),
+          child: const Text("Main"),
         ),
-        NavigationDrawerDestination(
-          icon: Icon(Icons.card_travel),
-          label: Text("Otra pantalla"),
-        )
+        ...appMenuItems.sublist(0, 3).map((menuItem) {
+          return NavigationDrawerDestination(
+            icon: Icon(menuItem.icon),
+            label: Text(menuItem.title),
+          );
+        }),
+        const Padding(
+          padding: EdgeInsets.fromLTRB(28, 16, 28, 10),
+          child: Divider(),
+        ),
+        const Padding(
+          padding: EdgeInsets.fromLTRB(28, 10, 16, 10),
+          child: Text("More options"),
+        ),
+        ...appMenuItems.sublist(3).map((menuItem) {
+          return NavigationDrawerDestination(
+            icon: Icon(menuItem.icon),
+            label: Text(menuItem.title),
+          );
+        }),
       ],
     );
   }
